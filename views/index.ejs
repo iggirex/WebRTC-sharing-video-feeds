@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+
+  <video autoplay></video>
+
+  <script>
+  //Different browsers have diff names for getUserMedia, if any of these three User calls works, navigator.getUserMedia will contain a valid reference
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+
+//giving simple constraints by passing audio and video
+    var constraints = {audio: true, video: true};
+
+//reference to the video tag, we'll need a reference to pass video stream into.
+    var videoArea = document.querySelector("video");
+
+//ABOVE IS INFO NEEDED TO CALL GETUSERMEDIA, below is the call we will use, passing in constraints and method for success and for error.
+    navigator.getUserMedia(constraints, onSuccess, onError);
+
+//then we define the success and error functions.
+    function onSuccess(stream){
+      console.log("succdess!");
+//here we are tying the video HTML element to our video stream.
+      videoArea.src = window.URL.createObjectURL(stream);
+      videoArea.play();
+    }
+
+    function onError(error) {
+      console.log("Error with get", error)
+    }
+
+  </script>
+
+
+  </script>
+
+</body>
+</html>
