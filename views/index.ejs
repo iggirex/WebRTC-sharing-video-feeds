@@ -26,7 +26,7 @@
 //then we define the success and error functions.
     function onSuccess(stream){
       console.log("succdess!");
-//here we are tying the video HTML element to our video stream.
+//here we are tying the video HTML element to our video stream. (Creating an object URL to pass our stream into and assigning that to our HTML video area, then we play it.)
       videoArea.src = window.URL.createObjectURL(stream);
       videoArea.play();
     }
@@ -34,10 +34,6 @@
     function onError(error) {
       console.log("Error with get", error)
     }
-
-  </script>
-
-
   </script>
 
 </body>
