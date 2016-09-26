@@ -5,29 +5,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Document</title>
+  <link rel="stylesheet" type="text/css" href="styles.css"
 </head>
 <body>
-
+  <div>
+      Video: <select id="camera"></select>
+    </div>
   <video autoplay></video>
-
   <script>
-  //Different browsers have diff names for getUserMedia, if any of these three User calls works, navigator.getUserMedia will contain a valid reference
+  var videoArea = document.querySelector("video");
+  var videoSelect = document.querySelecto('#camera');
+
+  startStream();
+  function startStream() {
     navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-
-//giving simple constraints by passing audio and video
-    var constraints = {audio: true, video: true};
-
-//reference to the video tag, we'll need a reference to pass video stream into.
-    var videoArea = document.querySelector("video");
-
-//ABOVE IS INFO NEEDED TO CALL GETUSERMEDIA, below is the call we will use, passing in constraints and method for success and for error.
+    var constraints = {
+        audio: false,
+        video: {
+            mandatory: {
+                maxWidth: 640,
+                maxHeight: 360,
+                minHeight: 360,
+                maxHeight: 640
+            }
+        }
+    };
     navigator.getUserMedia(constraints, onSuccess, onError);
-
+  }
 //then we define the success and error functions.
     function onSuccess(stream){
       console.log("succdess!");
 //here we are tying the video HTML element to our video stream. (Creating an object URL to pass our stream into and assigning that to our HTML video area, then we play it.)
       videoArea.src = window.URL.createObjectURL(stream);
+      videoArea.className = "grayscale_filter";
       videoArea.play();
     }
 
