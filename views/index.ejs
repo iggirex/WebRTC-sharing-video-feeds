@@ -12,22 +12,68 @@
       Video: <select id="camera"></select>
     </div>
   <video autoplay></video>
+
+  <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+  <script src="/client.js"></script>
+
   <script>
   var videoArea = document.querySelector("video");
-  var videoSelect = document.querySelecto('#camera');
+  var videoSelect = document.querySelector('#camera');
+
+
+
+//this will look for multiple camera devices hooked up to the computer. !!! FIREFOX doesn't use MediaStreamTrack function, so we'll make a loop to check if we can use this or not.
+  // MediaStreamTrack.getSources(getCameras);
+
+
+  // if(typeof MediaStreamTrack === 'undefined' || typeof MediaStreamTrack.getSources === 'undefined'){
+  //   document.querySelector('#cameraSelector').style.visibility="hidden";
+  // } else {
+  //   MediaStreamTrack.getSources(getCameras);
+  // }
+//HIDE THINGS LIKE THIS!!!! document.querySelector('#id').style.visibility="hidden";
+//In Firefox user can change their own camera with button on URL barNOTTTT
+//THISABOVE CODE !!!! DOES NOT WORK ON FIREFOX!!!! CANNOT CHOOSE CAMERA!!!
+
+
+//when we change cameras, restart the video feed on the page.
+  videoSelect.onchange = startStream;
 
   startStream();
+
+//sourceInfos are the cameras attached to computer, here they are consoled out
+  function getCameras(sourceInfos){
+// console.log("this is sourceInfos:", sourceInfos)
+    for (var i =0; i !== sourceInfos.length; i++){
+// console.log("this is ###EACH sourceInfos:", sourceInfos[i])
+      var sourceInfo = sourceInfos[i];
+      var option = document.createElement('option');
+      option.value = sourceInfo.id;
+      if (sourceInfo.kind === 'video'){
+        option.text = sourceInfo.label || 'camera' + (videoSelect.length + 1);
+        videoSelect.appendChild(option)
+      }
+    }
+  }
+
   function startStream() {
-    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.mediaDevices;
+//videoSource is looking for diff cameras
+    var videoSource = videoSelect.value;
     var constraints = {
         audio: false,
         video: {
+//set size of video feed seen in browser, pass in parameters instead of just 'true'
             mandatory: {
                 maxWidth: 640,
                 maxHeight: 360,
                 minHeight: 360,
                 maxHeight: 640
-            }
+            },
+            //optional grouping to use different cameras
+            optional: [{
+              sourceId: videoSource
+            }]
         }
     };
     navigator.getUserMedia(constraints, onSuccess, onError);
